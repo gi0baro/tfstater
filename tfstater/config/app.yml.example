@@ -1,0 +1,12 @@
+db:
+  adapter: postgres
+  host: db
+  database: postgres
+  user: postgres
+  password: postgres
+
+object_storage:
+  bucket: states
+  region: eu-west-1
+  access_key: ""
+  secret_key: ""

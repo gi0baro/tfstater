@@ -1,0 +1,20 @@
+[tool.poetry]
+name = "tfstater"
+version = "0.1.0"
+description = "An HTTP Terraform state backend with locking support"
+authors = ["Giovanni Barillari <gi0baro@d4net.org>"]
+license = "BSD-3-Clause"
+
+[tool.poetry.dependencies]
+python = "^3.9"
+boto3 = "^1.20.4"
+emmett = "^2.3.2"
+emmett-crypto = "^0.2.1"
+orjson = "^3.6.4"
+psycopg2-binary = "^2.9.1"
+
+[tool.poetry.dev-dependencies]
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

@@ -1,0 +1,5 @@
+__pycache__
+.venv
+
+tfstater/config/*.yml
+tfstater/logs
