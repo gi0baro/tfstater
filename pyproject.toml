@@ -12,6 +12,7 @@ emmett = "^2.3.2"
 emmett-crypto = "^0.2.1"
 orjson = "^3.6.4"
 psycopg2-binary = "^2.9.1"
+httpx = "0.17.1"
 
 [tool.poetry.dev-dependencies]
 
