@@ -15,6 +15,6 @@ services:
       - db
     command: develop --host=0.0.0.0
     volumes:
-      - .:/app
+      - ./tfstater:/app/app
     ports:
       - "8000:8000"

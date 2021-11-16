@@ -1,0 +1,35 @@
+{{ base_title = 'TFStater' }}
+{{ page_title = locals().get('page_title' )}}
+{{ meta_title = locals().get('meta_title', '{} | {}'.format(page_title, base_title) if page_title else base_title) }}
+
+<!DOCTYPE html>
+<html lang="{{ =current.request.language or 'en' }}">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0" />
+
+        <title>{{ =meta_title }}</title>
+
+        <link href="//fonts.googleapis.com/css?family=Open+Sans:300,400,300italic" rel="stylesheet" type="text/css" />
+
+        {{ include_static "css/main.css" }}
+
+        <!-- <script async="" src="https://www.googletagmanager.com/gtag/js?id=UA-432541-11"></script> -->
+        {{ block head }}
+        {{ end }}
+
+    </head>
+    <body class="bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-gray-50 font-os">
+        {{ block header }}
+        {{ end }}
+
+        <div class="w-full">
+            {{ block main }}
+            {{ include }}
+            {{ end }}
+        </div>
+
+        {{ block footer }}
+        {{ end }}
+    </body>
+</html>

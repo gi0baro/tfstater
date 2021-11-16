@@ -1,12 +1,28 @@
 db:
-  adapter: postgres
   host: db
   database: postgres
   user: postgres
   password: postgres
+
+auth:
+  hmac_key: supersecret
+  cookies_key: anothersecret
+  allow_email_login: true
+  restrict_email_domain: "@my.tld"
 
 object_storage:
   bucket: states
   region: eu-west-1
   access_key: ""
   secret_key: ""
+
+idp:
+  github:
+    client_id: ""
+    client_secret: ""
+    organization: my-organization
+    claim_roles: []
+    claim_teams: []
+    math_roles:
+      admin: maintainer
+    match_teams: {}

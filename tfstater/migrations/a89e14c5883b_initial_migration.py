@@ -1,8 +1,8 @@
 """Initial migration
 
 Migration ID: a89e14c5883b
-Revises: 
-Creation Date: 2021-11-12 17:31:11.703421
+Revises:
+Creation Date: 2021-11-16 13:12:16.098182
 
 """
 
@@ -23,7 +23,9 @@ class Migration(migrations.Migration):
             migrations.Column('password', 'password', length=512),
             migrations.Column('registration_key', 'string', default='', length=512),
             migrations.Column('reset_password_key', 'string', default='', length=512),
-            migrations.Column('registration_id', 'string', default='', length=512))
+            migrations.Column('registration_id', 'string', default='', length=512),
+            migrations.Column('role', 'integer', default=0, notnull=True))
+        self.create_index('users_widx__email_uniq', 'users', ['email'], expressions=[], unique=True)
         self.create_table(
             'auth_groups',
             migrations.Column('id', 'id'),
@@ -96,4 +98,5 @@ class Migration(migrations.Migration):
         self.drop_table('auth_permissions')
         self.drop_table('auth_memberships')
         self.drop_table('auth_groups')
+        self.drop_index('users_widx__email_uniq', 'users')
         self.drop_table('users')

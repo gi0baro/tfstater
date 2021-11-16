@@ -1,0 +1,44 @@
+{{ page_title = "Sign-in" }}
+{{ extend 'auth/layout.html' }}
+
+<div class="w-full font-semibold text-lg text-center mb-12">Sign in</div>
+
+{{ if auth_helpers.allow_email_login: }}
+{{ =form.custom.begin }}
+<div class="grid grid-flow-row grid-cols-4 gap-4 my-8 fields">
+    {{ for field in ['email', 'password']: }}
+    <div class="label py-2">
+        {{ =form.custom.label[field] }}
+    </div>
+    <div class="col-span-3 input">
+        {{ =form.custom.widget[field] }}
+    </div>
+    {{ if field in form.errors: }}
+    <div class="col-span-4 error">
+        {{ =form.errors[field] }}
+    </div>
+    {{ pass }}
+    {{ pass }}
+</div>
+
+<div class="flex w-full justify-center">
+    <input
+        type="submit"
+        class="py-2 px-8 w-40 bg-indigo-400 text-white rounded cursor-pointer focus:outline-none hover:bg-indigo-600 font-semibold"
+        value="Sign in"
+    ></input>
+</div>
+{{ =form.custom.end }}
+
+<div class="flex w-full justify-center mt-4">
+    <a
+        class="py-2 px-8 w-40 bg-gray-400 text-white rounded cursor-pointer focus:outline-none hover:bg-gray-600 font-semibold"
+        value="Sign up"
+        href="{{ =url('.registration') }}"
+    >Sign up</a>
+</div>
+{{ pass }}
+
+{{ for idp in auth_helpers.idps: }}
+{{ include 'auth/_idp/button.html' }}
+{{ pass }}
