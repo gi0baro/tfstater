@@ -1,5 +1,8 @@
 __pycache__
 .venv
 
+dist
+node_modules
+
 tfstater/config/*.yml
 tfstater/logs
