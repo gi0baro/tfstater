@@ -12,7 +12,7 @@
 
         <link href="//fonts.googleapis.com/css?family=Open+Sans:300,400,300italic" rel="stylesheet" type="text/css" />
 
-        {{ include_static "css/main.css" }}
+        {{ include_static "bundled/main.css" }}
 
         <!-- <script async="" src="https://www.googletagmanager.com/gtag/js?id=UA-432541-11"></script> -->
         {{ block head }}
@@ -23,7 +23,7 @@
         {{ block header }}
         {{ end }}
 
-        <div class="w-full">
+        <div class="w-full h-full">
             {{ block main }}
             {{ include }}
             {{ end }}

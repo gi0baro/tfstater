@@ -1,9 +1,9 @@
-from emmett import Injector, abort, url
-from emmett.http import redirect
+from emmett import Injector, abort, url, redirect
 
 from .. import User, app, auth, db, idp
 from ..idp import ExchangePipe
 from . import views
+from .main import MainContext
 
 
 class AuthHelpers(Injector):
@@ -26,11 +26,30 @@ auth_routes = auth.module(
 )
 
 
-@auth_routes.password_change()
-async def password_change():
-    if not auth.user.password:
-        return {"message": "You logged in with an external identity provider"}
-    return await auth_routes._password_change()
+@auth_routes.after_login
+def _after_login(form):
+    redirect(url("views.index"))
+
+
+@auth_routes.after_registration
+def _after_registration(form, user, logged_in):
+    if logged_in:
+        redirect(url("views.index"))
+    redirect(url("account.login"))
+
+
+@auth_routes.after_email_verification
+def _after_email_verification(user):
+    redirect(url('account.login'))
+
+
+if "password_change" in auth_routes.enabled_routes:
+    @auth_routes.password_change(injectors=[MainContext()])
+    async def password_change():
+        user = User.get(auth.user.id)
+        if not user.password:
+            return {"message": "You logged in with an external identity provider"}
+        return await auth_routes._password_change()
 
 
 if github_idp_provider := idp.get("github"):

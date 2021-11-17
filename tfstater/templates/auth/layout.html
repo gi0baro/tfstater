@@ -1,6 +1,17 @@
 {{ extend 'layout.html' }}
 
-<div class="flex flex-col h-screen auth">
+{{ block head }}
+<style>
+    body {
+        height: 100vh;
+    }
+</style>
+{{ end }}
+
+{{ block header }}
+{{ end }}
+
+<div class="flex flex-col h-full auth">
     <div class="wrapper flex h-full items-center">
         <div class="w-2/5 mx-auto p-8 rounded-md border border-gray-400 text-center">
             {{ include }}

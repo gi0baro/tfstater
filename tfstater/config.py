@@ -3,14 +3,17 @@ from .idp import Providers
 
 def load_config(app):
     app.config_from_yaml("app.yml")
-    app.config.auth.disabled_routes = [
-        "profile",
-        "password_retrieval",
-        "password_reset",
-        "password_change"
-    ]
+
+    auth_disabled_routes = ["profile", "download"]
+    if not app.config.auth.allow_email_login:
+        auth_disabled_routes.extend([
+            "email_verification",
+            "password_retrieval",
+            "password_reset",
+            "password_change"
+        ])
+    app.config.auth.disabled_routes = auth_disabled_routes
     app.config.auth.flash_messages = False
-    app.config.auth.registration_verification = False
     app.config.auth.remember_option = False
     app.config.auth.single_template = False
     app.config.db.adapter = "postgres"
