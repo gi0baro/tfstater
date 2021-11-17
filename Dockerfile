@@ -8,8 +8,9 @@ RUN poetry install --no-dev
 
 FROM docker.io/library/node:16 as css
 
-COPY fe/css wrk
-WORKDIR /wrk
+COPY fe/css wrk/fe/css
+COPY tfstater/templates wrk/tfstater/templates
+WORKDIR /wrk/fe/css
 
 ENV NODE_ENV production
 
