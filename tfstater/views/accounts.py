@@ -21,7 +21,8 @@ class AuthHelpers(Injector):
 auth_routes = auth.module(
     __name__,
     url_prefix="account",
-    pipeline=views.pipeline + [AuthHelpers()]
+    pipeline=views.pipeline,
+    injectors=[AuthHelpers()]
 )
 
 

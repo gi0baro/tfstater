@@ -15,6 +15,7 @@ object_storage:
   region: eu-west-1
   access_key: ""
   secret_key: ""
+  encrypt_data: true
 
 idp:
   github:

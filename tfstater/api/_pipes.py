@@ -2,10 +2,10 @@ import base64
 
 from emmett import Pipe, request, response
 
-from ..models.auth import Identity
+from .. import Identity, User, auth
 
 
-class AuthPipe(Pipe):
+class BasicAuthPipe(Pipe):
     async def pipe(self, next_pipe, **kwargs):
         try:
             auth_data = request.headers.get("authorization", "")
@@ -23,3 +23,17 @@ class AuthPipe(Pipe):
             return ""
         request.user = row.user
         return await next_pipe(**kwargs)
+
+
+class RoleCheckPipe(Pipe):
+    def __init__(self, role: User.ROLES):
+        self.role = role.value
+
+    async def pipe(self, next_pipe, **kwargs):
+        if auth.user.role < self.role:
+            response.status = 403
+            return {"error": "forbidden"}
+        return await next_pipe(**kwargs)
+
+
+maintainer_only_check = RoleCheckPipe(User.ROLES.maintainer)

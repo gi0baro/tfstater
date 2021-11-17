@@ -38,34 +38,36 @@ class State(TSModel):
             return True, res.id
         except Exception:
             pass
-        return cls.get_with_lock(name, lock_owner, lock_id=lock_id)
+        return cls.get_with_lock({"name": name}, lock_owner, lock_id=lock_id)
 
     @classmethod
     def get_locked(cls, name, lock_id):
         return cls.get(name=name, lock_id=lock_id)
 
     @classmethod
-    def get_with_lock(cls, name, lock_owner, lock_id=None):
+    def get_with_lock(cls, selector, lock_owner, lock_id=None):
         lock_id = lock_id or uuid.uuid4().hex
-        res = cls.where(
-            lambda m: (m.name == name) & (m.lock_id == None)
-        ).update(
+        dbset = cls.where(lambda m: m.lock_id == None)
+        for key, val in selector.items():
+            dbset = dbset.where(cls.table[key] == val)
+        res = dbset.update(
             lock_id=lock_id,
             lock_owner=lock_owner,
             locked_at=now()
         )
-        row = cls.get(name=name)
+        row = cls.get(**selector)
         if not res:
             return False, row
         return True, row
 
     @classmethod
-    def unlock(cls, name, existing_lock_id=None):
-        dbset = cls.where(lambda m: m.name == name)
+    def unlock(cls, selector, existing_lock_id=None):
         if existing_lock_id:
-            dbset = dbset.where(lambda m: m.lock_id == existing_lock_id)
+            dbset = cls.where(lambda m: m.lock_id == existing_lock_id)
         else:
-            dbset = dbset.where(lambda m: m.lock_id != None)
+            dbset = cls.where(lambda m: m.lock_id != None)
+        for key, val in selector.items():
+            dbset = dbset.where(cls.table[key] == val)
         res = dbset.update(
             lock_id=None,
             lock_owner=None,
@@ -82,7 +84,9 @@ class State(TSModel):
                 if not row:
                     raise StateLockedException
             else:
-                lock_acquired, row = cls.get_with_lock(name, lock_owner=lock_owner)
+                lock_acquired, row = cls.get_with_lock(
+                    {"name": name}, lock_owner=lock_owner
+                )
                 if not lock_acquired:
                     raise StateLockedException
             try:

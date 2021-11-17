@@ -1,83 +1,43 @@
-from emmett import Pipe, request, response
-from emmett.serializers import Serializers
-from emmett.tools import service
+from emmett import response
+from emmett_rest import RESTModule
 
-from .. import db
-from ..helpers import StateLockedException
-from ..models.states import State
-from ..s3 import get_object, put_object
-from . import api
+from .. import State, auth
+from . import rest_api
+from ._pipes import maintainer_only_check
 
 
-class CType(Pipe):
-    async def open(self):
-        response.content_type = "application/json"
+class StatesModule(RESTModule):
+    def init(self):
+        self.create_pipeline.append(maintainer_only_check)
+        self.delete_pipeline.append(maintainer_only_check)
 
 
-_json_dump = Serializers.get_for("json")
-
-states = api.module(__name__, "states", url_prefix="states")
-states.pipeline = [CType(), db.pipe]
-
-
-@states.route("/<str:name>", methods="get", output="bytes")
-async def get_state_by_name(name: str):
-    rv = b"{}"
-    row = State.get(name=name)
-    if not row or not row.file_path:
-        response.status = 404
-        return rv
-    try:
-        rv = await get_object(row.file_path)
-    except Exception:
-        response.status = 404
-    return rv
+states = rest_api.rest_module(
+    __name__, "states", State,
+    url_prefix="states",
+    enabled_methods=["index", "create", "delete"],
+    module_class=StatesModule
+)
 
 
-@states.route("/<str:name>", methods="post", output="bytes")
-async def update_state_by_name(name: str):
-    try:
-        with State.lock(name, request.user, request.query_params.ID) as state:
-            params = await request.body_params
-            try:
-                with db.atomic():
-                    revision = state.versions.create(
-                        version=params.serial,
-                        publisher=request.user
-                    )
-            except Exception:
-                raise StateLockedException
-            await put_object(
-                revision.id.object_store_path,
-                _json_dump(params)
-            )
-    except StateLockedException:
-        response.status = 409
-    return b"{}"
-
-
-@states.route("/<str:name>/lock", methods="post")
-@service.json
-async def lock_state(name: str):
-    params = await request.body_params
-    acquired, row = State.get_or_create_locked(name, request.user, params.ID)
+@states.route("/<int:rid>/lock", methods="post", pipeline=[maintainer_only_check])
+async def lock_state(rid):
+    acquired, row = State.get_with_lock({"id": rid}, auth.user)
     if not acquired:
         response.status = 409
+        return {"error": "Unable to acquire lock"}
+    response.status = 201
     return {
-        "Created": row.locked_at,
-        "ID": row.lock_id,
-        "Info": params.Info,
-        "Operation": params.Operation,
-        "Path": params.Path,
-        "Version": params.Version,
-        "Who": row.lock_owner.email
+        "lock_id": row.lock_id,
+        "lock_owner": row.lock_owner,
+        "locked_at": row.locked_at
     }
 
 
-@states.route("/<str:name>/lock", methods="delete", output="bytes")
-async def unlock_state(name: str):
-    # NOTE: if ID is missing from params is a force unlock
-    params = await request.body_params
-    if not State.unlock(name, params.ID):
+@states.route("/<int:rid>/lock", methods="delete", pipeline=[maintainer_only_check])
+async def unlock_state(rid):
+    unlocked = State.unlock({"id": rid})
+    if not unlocked:
         response.status = 409
-    return b"{}"
+        return {"error": "Unable to unlock"}
+    return {}

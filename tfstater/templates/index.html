@@ -1,0 +1,15 @@
+{{ extend 'layout.html' }}
+
+{{ block head }}
+{{ include_static 'bundled/components.min.js' }}
+{{ end }}
+
+{{ block header }}
+{{ include '_header.html' }}
+{{ end }}
+
+<div class="main">
+    <tfstater-state-list
+        api_endpoint="{{ =url('api.rest.states.index') }}"
+    ></tfstater-state-list>
+</div>

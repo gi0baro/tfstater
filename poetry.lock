@@ -105,6 +105,17 @@ optional = false
 python-versions = ">=3.7"
 
 [[package]]
+name = "emmett-rest"
+version = "1.2.0"
+description = "REST extension for Emmett framework"
+category = "main"
+optional = false
+python-versions = ">=3.7,<4.0"
+
+[package.dependencies]
+emmett = ">=2.2.0,<3.0.0"
+
+[[package]]
 name = "h11"
 version = "0.10.0"
 description = "A pure-Python, bring-your-own-I/O implementation of HTTP/1.1"
@@ -395,7 +406,7 @@ python-versions = ">=3.6.1"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-content-hash = "16a056bbe80801964cf36fa984ba26b62e045a3bc1a2c0285862489750d2be23"
+content-hash = "23b14ccf76d7ad80047978f18cf7312bab9c13a2f7564106e82f26013e24d2e9"
 
 [metadata.files]
 asgiref = [
@@ -452,6 +463,10 @@ emmett-crypto = [
     {file = "emmett_crypto-0.2.1-cp39-cp39-musllinux_1_1_x86_64.whl", hash = "sha256:f240a36a84a90f17509143682b984972d849a9e146f4017fe7d5be17b0844982"},
     {file = "emmett_crypto-0.2.1-cp39-none-win_amd64.whl", hash = "sha256:69da1ebd39401cac2eeb9e290eaabdc4cf54072ba4a9da2d8d815955bdca451c"},
     {file = "emmett_crypto-0.2.1.tar.gz", hash = "sha256:e252137704b5853935dfa37a7fdfa31484e31ff6b0a681334fea7aa8989f9849"},
+]
+emmett-rest = [
+    {file = "Emmett-REST-1.2.0.tar.gz", hash = "sha256:4feefbcd1a934fd5ea5a853026851a00d82de8c3b67f8bfa721290f5af1957ac"},
+    {file = "Emmett_REST-1.2.0-py3-none-any.whl", hash = "sha256:2b8e785681383b01d9597a2a9c058e7629e5cafe9cfe81e78c97ec309624d560"},
 ]
 h11 = [
     {file = "h11-0.10.0-py2.py3-none-any.whl", hash = "sha256:9eecfbafc980976dbff26a01dd3487644dd5d00f8038584451fc64a660f7c502"},

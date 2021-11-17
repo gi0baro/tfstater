@@ -2,6 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
+.font-os {
+    font-family: "Open Sans", sans-serif;
+}
+
 .auth form .fields input {
     @apply flex-1 appearance-none w-full py-2 px-4 my-auto border border-gray-400 bg-gray-50 placeholder-gray-400 text-base rounded-lg focus:outline-none focus:border-transparent focus:ring-2 focus:ring-indigo-600 dark:text-gray-900;
 }

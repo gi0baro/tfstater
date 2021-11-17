@@ -1,7 +1,11 @@
-from .. import app
-from ._pipes import AuthPipe
+from emmett.tools.service import ServicePipe
 
-api = app.module(__name__, "api", url_prefix="api")
-api.pipeline = [AuthPipe()]
+from .. import app, auth, db, sessions
 
-from . import states
+api = app.module(__name__, "api")
+api.pipeline = [db.pipe]
+
+rest_api = api.module(__name__, "rest", url_prefix="api")
+rest_api.pipeline = [ServicePipe("json"), sessions, auth.pipe]
+
+from . import states, terraform

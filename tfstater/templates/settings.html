@@ -1,0 +1,55 @@
+{{ extend 'layout.html' }}
+
+{{ block head }}
+{{ include_static 'bundled/components.min.js' }}
+{{ end }}
+
+{{ block header }}
+{{ include '_header.html' }}
+{{ end }}
+
+<div class="container mx-auto px-4">
+    <div class="flex my-4">
+        <div class="flex flex-1 items-center text-lg justify-between">
+            API Keys
+        </div>
+        <div class="w-32 flex items-center justify-end py-2">
+            <a href="{{ =url('views.actions.new_identity') }}">
+                <button class="py-1 px-4 flex items-center border border-green-500 text-green-500 rounded focus:outline-none">
+                    New
+                </button>
+            </a>
+        </div>
+    </div>
+    <div class="flex flex-wrap mt-2 mb-8">
+        {{ for api_key in api_keys: }}
+        <tfstater-api-key
+            class="w-full flex"
+            created_at="{{ =api_key.created_at }}"
+            value="{{ =api_key.key }}"
+            delete_url="{{ =url('views.actions.delete_identity', api_key.id) }}"
+        ></tfstater-api-key>
+        {{ pass }}
+    </div>
+    {{ if can_manage_users: }}
+    <div class="flex my-4">
+        <div class="flex flex-1 items-center text-lg justify-between">
+            Users
+        </div>
+    </div>
+    <div class="flex flex-wrap my-2">
+        {{ for user in users: }}
+        <tfstater-user-manage
+            class="w-full flex"
+            email="{{ =user.email }}"
+            role="{{ =user.role }}"
+            edit_url="{{ =url('views.actions.edit_user', user.id) }}"
+            delete_url="{{ =url('views.actions.delete_user', user.id) }}"
+            {{ if user.id != ctx.user.id: }}
+            editable
+            {{ pass }}
+        ></tfstater-user-manage>
+        {{ pass }}
+    </div>
+    {{ pass }}
+</div>

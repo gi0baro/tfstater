@@ -1,6 +1,7 @@
 import boto3
 
 from botocore.client import Config
+from emmett_crypto.symmetric import encrypt_b64, decrypt_b64
 
 from . import app
 from .helpers import run_in_loop
@@ -30,21 +31,26 @@ async def list_path_contents(path):
     return [obj.key[len(path) + 1:] for obj in objs]
 
 
-def put_object(key, obj):
+def put_object(key: str, obj: bytes):
     if app.config.object_storage.path_prefix:
         key = f"{app.config.object_storage.path_prefix}/{key}"
+    if app.config.object_storage.encrypt_data:
+        obj = encrypt_b64(obj, app.config.auth.hmac_key).encode("utf8")
     return run_in_loop(
         s3bucket.put_object,
         kwargs={"Key": key, "Body": obj}
     )
 
 
-def _obj_reader(key):
+def _obj_reader(key: str) -> bytes:
     obj = s3bucket.Object(key).get()
     return obj["Body"].read()
 
 
-def get_object(key):
+async def get_object(key: str) -> bytes:
     if app.config.object_storage.path_prefix:
         key = f"{app.config.object_storage.path_prefix}/{key}"
-    return run_in_loop(_obj_reader, args=[key])
+    rv = await run_in_loop(_obj_reader, args=[key])
+    if app.config.object_storage.encrypt_data:
+        rv = decrypt_b64(app.config.auth.hmac_key)
+    return rv
