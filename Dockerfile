@@ -34,5 +34,5 @@ COPY --from=components /wrk/dist/components.umd.min.js app/static/bundled/compon
 
 EXPOSE 8000
 
-ENTRYPOINT [ "emmett" ]
-CMD [ "serve", "--no-access-log", "--max-concurrency", "512" ]
+ENTRYPOINT [ "gunicorn" ]
+CMD [ "app:app", "-k", "emmett.asgi.workers.EmmettWorker", "-b", "0.0.0.0:8000", "-w", "2", "--access-logfile", "-" ]

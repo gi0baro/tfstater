@@ -14,6 +14,7 @@ orjson = "^3.6.4"
 psycopg2-binary = "^2.9.1"
 httpx = "0.17.1"
 emmett-rest = "^1.2.0"
+gunicorn = "^20.1.0"
 
 [tool.poetry.dev-dependencies]
 
