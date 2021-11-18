@@ -118,7 +118,7 @@ config:
 
 #### Github OIDC
 
-Create an OAuth application within your Github organization and use the Github login:
+Create an OAuth application within your Github organization. Set the callback url to `http|https://{tfstater-instance}/account/github/exchange` and use the Github login:
 
 ```yaml
 config:
@@ -151,12 +151,14 @@ config:
 Login to your TFStater instance and through the settings view obtain your Api-Key. Then you just need define the `backend` block in you Terraform code:
 
 ```terraform
-backend "http" {
-  address = "https://{tfstater-instance}/terraform/{state-name}"
-  lock_address = "https://{tfstater-instance}/terraform/{state-name}/lock"
-  unlock_address = "https://{tfstater-instance}/terraform/{state-name}/lock"
-  lock_method = "POST"
-  unlock_method = "DELETE"
+terraform {
+  backend "http" {
+    address = "https://{tfstater-instance}/terraform/{state-name}"
+    lock_address = "https://{tfstater-instance}/terraform/{state-name}/lock"
+    unlock_address = "https://{tfstater-instance}/terraform/{state-name}/lock"
+    lock_method = "POST"
+    unlock_method = "DELETE"
+  }
 }
 ```
 
