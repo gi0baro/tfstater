@@ -14,7 +14,7 @@ WORKDIR /wrk/fe/css
 
 ENV NODE_ENV production
 
-RUN npm ci && npx tailwindcss -i src/tailwind.css -c tailwind.config.js -o dist/main.css --minify
+RUN npm ci --also=dev && npx tailwindcss -i src/tailwind.css -c tailwind.config.js -o dist/main.css --minify
 
 FROM docker.io/library/node:16 as components
 
@@ -30,7 +30,7 @@ ENV PATH /.venv/bin:$PATH
 
 WORKDIR /app
 COPY tfstater app
-COPY --from=css /wrk/dist/main.css app/static/bundled/main.css
+COPY --from=css /wrk/fe/css/dist/main.css app/static/bundled/main.css
 COPY --from=components /wrk/dist/components.umd.min.js app/static/bundled/components.min.js
 
 EXPOSE 8000
