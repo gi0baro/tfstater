@@ -1,6 +1,4 @@
-FROM ghcr.io/gi0baro/poetry-bin:3.9-slim as builder
-
-RUN apt-get -qq update -y && apt-get -q install -y gcc git
+FROM ghcr.io/gi0baro/poetry-bin:3.9 as builder
 
 COPY pyproject.toml .
 COPY poetry.lock .
