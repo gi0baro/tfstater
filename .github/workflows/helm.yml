@@ -1,10 +1,9 @@
 name: Chart
 
 on:
-  workflow_run:
-    workflows: [Docker]
-    types:
-      - completed
+  push:
+    branches:
+      - master
 
 jobs:
   release:
@@ -25,7 +24,14 @@ jobs:
         with:
           version: v3.4.0
 
+      - name: Helm repos
+        run: |
+          helm repo add bitnami https://charts.bitnami.com/bitnami
+          helm repo add minio https://charts.min.io/
+
       - name: Run chart-releaser
         uses: helm/chart-releaser-action@v1.2.1
         env:
           CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+        with:
+          charts_dir: charts
