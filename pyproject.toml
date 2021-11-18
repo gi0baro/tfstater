@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "tfstater"
-version = "0.1.0"
+version = "0.1.1"
 description = "An HTTP Terraform state backend with locking support"
 authors = ["Giovanni Barillari <gi0baro@d4net.org>"]
 license = "BSD-3-Clause"
