@@ -52,5 +52,5 @@ async def get_object(key: str) -> bytes:
         key = f"{app.config.object_storage.path_prefix}/{key}"
     rv = await run_in_loop(_obj_reader, args=[key])
     if app.config.object_storage.encrypt_data:
-        rv = decrypt_b64(app.config.auth.hmac_key)
+        rv = decrypt_b64(rv.decode("utf8"), app.config.auth.hmac_key)
     return rv

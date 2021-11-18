@@ -79,6 +79,6 @@ async def lock_state(name: str):
 async def unlock_state(name: str):
     # NOTE: if ID is missing from params is a force unlock
     params = await request.body_params
-    if not State.unlock(name, params.ID):
+    if not State.unlock({"name": name}, params.ID):
         response.status = 409
     return b"{}"
