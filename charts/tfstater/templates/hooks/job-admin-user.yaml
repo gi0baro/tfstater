@@ -1,0 +1,73 @@
+{{- if .Values.adminUser.create -}}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ include "tfstater.fullname" . }}-user
+  labels:
+    {{- include "tfstater.labels" . | nindent 4 }}
+  annotations:
+    helm.sh/hook: post-install
+    helm.sh/hook-weight: "1"
+    helm.sh/hook-delete-policy: before-hook-creation,hook-succeeded
+spec:
+  template:
+    metadata:
+      name: {{ include "tfstater.fullname" . }}-user
+    spec:
+      {{- with .Values.image.pullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "tfstater.serviceAccountName" . }}
+      {{- with .Values.priorityClassName }}
+      priorityClassName: {{ . | quote }}
+      {{- end }}
+      {{- with .Values.podSecurityContext }}
+      securityContext:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      containers:
+        - name: {{ .Chart.Name }}
+          {{- with .Values.securityContext }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          {{- end }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default (printf "v%s" .Chart.AppVersion) }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command:
+            - emmett
+            - create-maintainer
+            - $TFSTATER__SETUP_USER_EMAIL
+            - $TFSTATER__SETUP_USER_PASSWORD
+          env:
+            - name: TFSTATER__SETUP_USER_EMAIL
+              value: {{ .Values.adminUser.email | default "admin@tfstater.local" | quote }}
+            - name: TFSTATER__SETUP_USER_PASSWORD
+              value: {{ .Values.adminUser.password | default "password" | quote }}
+          {{- with .Values.resources }}
+          resources:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          volumeMounts:
+            - name: config
+              subPath: app.yml
+              mountPath: /app/app/config/app.yml
+              readOnly: true
+      volumes:
+        - name: config
+          secret:
+            secretName: {{ include "tfstater.fullname" . }}
+      restartPolicy: OnFailure
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+{{- end }}

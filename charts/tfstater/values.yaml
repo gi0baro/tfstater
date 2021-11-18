@@ -1,0 +1,170 @@
+image:
+  repository: ghcr.io/gi0baro/tfstater
+  # Allows people to override tag if they don't want to use the app version
+  tag:
+  pullPolicy: IfNotPresent
+  pullSecrets: []
+
+# -- Custom labels to add into metadata
+labels: {}
+  # foo: bar
+
+podAnnotations: {}
+
+replicas: 1
+
+## Create HorizontalPodAutoscaler object for deployment type
+#
+autoscaling:
+  enabled: false
+#   minReplicas: 3
+#   maxReplicas: 5
+#   targetCPUUtilizationPercentage: 75
+#   targetMemoryUtilizationPercentage: 75
+
+## See `kubectl explain poddisruptionbudget.spec` for more
+## ref: https://kubernetes.io/docs/tasks/run-application/configure-pdb/
+podDisruptionBudget: {}
+#  minAvailable: 1
+#  maxUnavailable: 1
+
+## See `kubectl explain deployment.spec.strategy` for more
+## ref: https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#strategy
+deploymentStrategy:
+  type: RollingUpdate
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name:
+  # Annotations to add to the service account
+  annotations: {}
+
+service:
+  annotations: {}
+  type: ClusterIP
+  port: "8000"
+  # nodePort:
+
+ingress:
+  enabled: false
+  # For Kubernetes >= 1.18 you should specify the ingress-controller via the field ingressClassName
+  # See https://kubernetes.io/blog/2020/04/02/improvements-to-the-ingress-api-in-kubernetes-1.18/#specifying-the-class-of-an-ingress
+  # className: nginx
+  # Values can be templated
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+
+  # pathType is only for k8s >= 1.1=
+  pathType: Prefix
+
+  hosts:
+    - tfstater.local
+  tls: []
+  #  - secretName: tfstater-tls
+  #    hosts:
+  #      - tfstater.local
+
+resources: {}
+#  limits:
+#    cpu: 200m
+#    memory: 400Mi
+#  requests:
+#    cpu: 100m
+#    memory: 200Mi
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+  # podAntiAffinity:
+  #   requiredDuringSchedulingIgnoredDuringExecution:
+  #   - labelSelector:
+  #       matchExpressions:
+  #       - key: app
+  #         operator: In
+  #         values:
+  #         - tfstater
+  #     topologyKey: "kubernetes.io/hostname"
+
+## Optional priorityClassName for TFStater
+priorityClassName: ""
+
+podSecurityContext: {}
+  # fsGroup: 2000
+
+securityContext: {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+volumes: []
+volumeMoiunts: []
+
+env: {}
+envFrom: []
+
+postgresql:
+  enabled: false
+  postgresqlUsername: postgres
+  postgresqlPassword: ""
+  postgresqlDatabase: tfstater
+
+minio:
+  enabled: false
+  rootUser: tfstater
+  rootPassword: ""
+  service:
+    port: "9000"
+  buckets:
+    - name: tfstater
+      policy: none
+      purge: false
+
+## TFStater configuration
+config:
+  db:
+    host: ""
+    database: tfstater
+    user: tfstater
+    password: ""
+    pool_size: 10
+
+  auth:
+    hmac_key:
+    cookies_key:
+    allow_email_login: true
+    restrict_email_domain:
+    registration_verification: true
+
+  object_storage:
+    access_key:
+    secret_key:
+    region: eu-west-1
+    bucket: tfstater
+    path_prefix:
+    encrypt_data: false
+
+  idp:
+    github:
+      # client_id:
+      # client_secret:
+      # organization:
+      # claim_roles: []
+      # claim_teams: []
+      # match_role:
+      #   admin: maintainer
+      # match_teams:
+      #   team: maintainer
+
+adminUser:
+  create: false
+  email: ""
+  password: ""
