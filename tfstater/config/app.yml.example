@@ -3,12 +3,14 @@ db:
   database: postgres
   user: postgres
   password: postgres
+  pool_size: 10
 
 auth:
   hmac_key: supersecret
   cookies_key: anothersecret
   allow_email_login: true
   restrict_email_domain: "@my.tld"
+  registration_verification: true
 
 object_storage:
   bucket: states
