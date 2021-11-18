@@ -24,4 +24,4 @@ sessions = SessionManager.cookies(app.config.auth.cookies_key, encryption_mode="
 
 idp = Providers(app.config.idp)
 
-from . import api, views
+from . import api, views, commands
