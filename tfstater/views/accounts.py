@@ -1,4 +1,4 @@
-from emmett import Injector, abort, url, redirect
+from emmett import Injector, abort, url, redirect, request
 
 from .. import User, app, auth, db, idp
 from ..idp import ExchangePipe
@@ -55,7 +55,10 @@ if "password_change" in auth_routes.enabled_routes:
 if github_idp_provider := idp.get("github"):
     @auth_routes.route()
     async def github():
-       github_idp_provider.authorize(url(".github_exchange", scheme=True))
+        scheme = request.headers.get("x-forwarded-proto") or request.scheme
+        github_idp_provider.authorize(
+            url(".github_exchange", scheme=scheme)
+        )
 
     @auth_routes.route(
         "/github/exchange", pipeline=[ExchangePipe(github_idp_provider)]
