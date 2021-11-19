@@ -10,7 +10,17 @@ auth:
   cookies_key: anothersecret
   allow_email_login: true
   restrict_email_domain: "@my.tld"
-  registration_verification: true
+  registration_verification: false
+  registration_approval: true
+
+smtp:
+  sender: "noreply@tfstater.local"
+  server:
+  port: 25
+  username: tfstater
+  password: ""
+  use_tls: false
+  use_ssl: false
 
 object_storage:
   bucket: states

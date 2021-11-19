@@ -3,6 +3,10 @@
 
 <div class="w-full font-semibold text-lg text-center mb-12">Sign up</div>
 
+{{ if message: }}
+<div class="message-wrapper">{{ =message }}</div>
+{{ pass }}
+
 {{ if auth_helpers.allow_email_login: }}
 {{ =form.custom.begin }}
 <div class="grid grid-flow-row grid-cols-4 gap-4 my-8 fields">

@@ -22,8 +22,11 @@
         {{ roleLabel }}
       </div>
     </div>
-    <div class="ctl">
-      <confirm-button v-if="editable" @tap="deleteAction">
+    <div :class="`ctl ${pending ? 'large' : ''}`">
+      <confirm-button class="approve" v-if="editable && pending" @tap="approveAction">
+        Approve
+      </confirm-button>
+      <confirm-button class="delete" v-if="editable" @tap="deleteAction">
         Delete
       </confirm-button>
       <div v-else class="label">
@@ -54,7 +57,14 @@ export default {
     edit_url: {
       type: String
     },
+    approve_url: {
+      type: String
+    },
     editable: {
+      type: Boolean,
+      default: false
+    },
+    pending: {
       type: Boolean,
       default: false
     }
@@ -81,6 +91,9 @@ export default {
     }
   },
   methods: {
+    approveAction() {
+      window.location.href = this.approve_url
+    },
     editAction() {
       window.location.href = `${this.edit_url}?role=${this.selectedRole}`
     },
@@ -116,11 +129,20 @@ export default {
 .element .ctl {
   @apply w-32 flex items-center justify-end;
 }
+.element .ctl.large {
+  @apply w-64;
+}
 .element .ctl .label {
   @apply py-1 text-gray-400;
 }
 .element .ctl:deep() .btn {
-  @apply py-1 px-4 flex items-center cursor-pointer border border-solid border-pink-500 text-pink-500 dark:border-pink-400 dark:text-pink-400 rounded focus:outline-none;
+  @apply ml-4 py-1 px-4 flex items-center cursor-pointer border border-solid rounded focus:outline-none;
+}
+.element .ctl .approve:deep() .btn {
+  @apply border-indigo-500 text-indigo-500 dark:border-indigo-300 dark:text-indigo-300;
+}
+.element .ctl .delete:deep() .btn {
+  @apply border-pink-500 text-pink-500 dark:border-pink-400 dark:text-pink-400;
 }
 .element .ctl:deep() .btn.confirm {
   @apply bg-pink-200 dark:bg-pink-600 dark:text-gray-50;

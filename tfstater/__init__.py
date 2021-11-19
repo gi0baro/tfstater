@@ -1,7 +1,7 @@
 from emmett import App
 from emmett.orm import Database
 from emmett.sessions import SessionManager
-from emmett.tools.auth import Auth
+from emmett.tools import Auth, Mailer
 from emmett_rest import REST
 
 from .config import load_config
@@ -9,6 +9,8 @@ from .idp import Providers
 
 app = App(__name__)
 load_config(app)
+
+mailer = Mailer(app)
 
 rest = app.use_extension(REST)
 

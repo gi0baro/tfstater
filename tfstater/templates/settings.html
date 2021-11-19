@@ -44,9 +44,13 @@
             email="{{ =user.email }}"
             role="{{ =user.role }}"
             edit_url="{{ =url('views.actions.edit_user', user.id) }}"
+            approve_url="{{ =url('views.actions.allow_user', user.id) }}"
             delete_url="{{ =url('views.actions.delete_user', user.id) }}"
             {{ if user.id != ctx.user.id: }}
             editable
+            {{ pass }}
+            {{ if user.registration_key: }}
+            pending
             {{ pass }}
         ></tfstater-user-manage>
         {{ pass }}

@@ -35,7 +35,6 @@ def _after_login(form):
 def _after_registration(form, user, logged_in):
     if logged_in:
         redirect(url("views.index"))
-    redirect(url("account.login"))
 
 
 @auth_routes.after_email_verification

@@ -8,9 +8,12 @@ from . import User, app, db
 @click.argument("password")
 def cmd_create_maintainer(email, password):
     with db.connection():
-        User.create(
+        res = User.create(
             email=email,
             password=password,
-            role=User.ROLES.maintainer
+            role=User.ROLES.maintainer.value
         )
+        if not res.id:
+            return
+        res.id.allow()
         db.commit()

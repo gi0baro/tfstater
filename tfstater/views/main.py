@@ -50,6 +50,19 @@ async def delete_identity(identity_id):
     redirect(url('views.settings'))
 
 
+@actions.route("/allow_user/<int:user_id>")
+@requires(
+    lambda: auth.user.role == User.ROLES.maintainer,
+    lambda: redirect((url("view.settings")))
+)
+async def allow_user(user_id):
+    if user_id != auth.user.id:
+        User.where(lambda u: u.id == user_id).update(
+            registration_key=""
+        )
+    redirect(url('views.settings'))
+
+
 @actions.route("/edit_user/<int:user_id>")
 @requires(
     lambda: auth.user.role == User.ROLES.maintainer,
