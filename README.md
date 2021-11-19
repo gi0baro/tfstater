@@ -36,6 +36,13 @@ config:
   auth:
     hmac_key: a-very-strong-key
     cookies_key: another-strong-key
+    allow_email_login: true
+    registration_approval: true
+
+adminUser:
+  create: true
+  email: admin@my.tld
+  password: your-super-secret-password
 ```
 
 In order to expose your TFStater instance you also need to enable the Ingress resource:
@@ -72,7 +79,7 @@ config:
     bucket: my-s3-bucket
     access_key: ""
     secret_key: ""
-    path_prefix: terraform/states
+    # path_prefix: terraform/states
 ```
 
 For S3-compatible providers, you might need to specify the endpoint:
@@ -122,6 +129,9 @@ Create an OAuth application within your Github organization. Set the callback ur
 
 ```yaml
 config:
+  auth:
+    allow_email_login: false
+
   idp:
     github:
       client_id: your-gh-app-client-id
@@ -144,7 +154,42 @@ config:
 
 #### Use email login
 
-*Feature still in development*
+TFStater provides also a standard email signup flow. In order to verify new signups, you have 2 options: manual approval, and email verification.
+
+In order to setup manual approval, you also need to create your fist user:
+
+```yaml
+config:
+  auth:
+    allow_email_login: true
+    registration_approval: true
+
+adminUser:
+  create: true
+  email: admin@my.tld
+  password: your-super-secret-password
+```
+
+using this configuration, you can manually approve users through the settings page.
+
+The email verification flow requires domain restriction and to setup an smtp server to allow TFStater to send verifications:
+
+```yaml
+config:
+  auth:
+    allow_email_login: true
+    registration_verification: true
+    restrict_email_domain: "@my.tld"
+
+  smtp:
+    sender: tfstater@my.tld
+    server: smtp.my.tld
+    username: tfstater
+    password: super-secret-password
+    # port: 25
+    # use_tls: false
+    # use_ssl: false
+```
 
 ## Usage
 

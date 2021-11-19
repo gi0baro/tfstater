@@ -3,8 +3,8 @@ type: application
 name: tfstater
 description: An HTTP Terraform state backend with locking support
 
-version: 0.1.4
-appVersion: 0.1.2
+version: 0.2.0
+appVersion: 0.2.0
 kubeVersion: ">=1.14.0-0"
 
 home: https://github.com/gi0baro/tfstater

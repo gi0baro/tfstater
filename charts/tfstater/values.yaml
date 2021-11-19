@@ -137,13 +137,6 @@ config:
     password: ""
     pool_size: 10
 
-  auth:
-    hmac_key:
-    cookies_key:
-    allow_email_login: true
-    restrict_email_domain:
-    registration_verification: true
-
   object_storage:
     access_key:
     secret_key:
@@ -152,19 +145,36 @@ config:
     path_prefix:
     encrypt_data: false
 
-  idp:
-    github:
-      # client_id:
-      # client_secret:
-      # organization:
-      # claim_roles: []
-      # claim_teams: []
-      # match_role:
-      #   admin: maintainer
-      # match_teams:
-      #   team: maintainer
+  auth:
+    hmac_key:
+    cookies_key:
+    allow_email_login: false
+    restrict_email_domain:
+    registration_approval: false
+    registration_verification: false
+
+  smtp: {}
+    # sender: "noreply@tfstater.local"
+    # server: ""
+    # port: 25
+    # username: tfstater
+    # password: ""
+    # use_tls: false
+    # use_ssl: false
+
+  idp: {}
+    # github:
+    #   client_id:
+    #   client_secret:
+    #   organization:
+    #   claim_roles: []
+    #   claim_teams: []
+    #   match_role:
+    #     admin: maintainer
+    #   match_teams:
+    #     team: maintainer
 
 adminUser:
   create: false
-  email: ""
-  password: ""
+  # email: ""
+  # password: ""
