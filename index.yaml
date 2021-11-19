@@ -2,6 +2,32 @@ apiVersion: v1
 entries:
   tfstater:
   - apiVersion: v2
+    appVersion: 0.2.0
+    created: "2021-11-19T10:15:57.654542632Z"
+    dependencies:
+    - condition: minio.enabled
+      name: minio
+      repository: https://charts.min.io/
+      version: 3.*.*
+    - condition: postgresql.enabled
+      name: postgresql
+      repository: https://charts.bitnami.com/bitnami
+      version: 10.*.*
+    description: An HTTP Terraform state backend with locking support
+    digest: 36fee432e76b180e1ba0239f5dbfeba5698c8b39c282fea9cefc5c71e450abb9
+    home: https://github.com/gi0baro/tfstater
+    kubeVersion: '>=1.14.0-0'
+    maintainers:
+    - email: gi0baro@d4net.org
+      name: Giovanni Barillari
+    name: tfstater
+    sources:
+    - https://github.com/gi0baro/tfstater
+    type: application
+    urls:
+    - https://github.com/gi0baro/tfstater/releases/download/tfstater-0.2.0/tfstater-0.2.0.tgz
+    version: 0.2.0
+  - apiVersion: v2
     appVersion: 0.1.2
     created: "2021-11-18T21:49:41.576676981Z"
     dependencies:
@@ -105,4 +131,4 @@ entries:
     urls:
     - https://github.com/gi0baro/tfstater/releases/download/tfstater-0.1.1/tfstater-0.1.1.tgz
     version: 0.1.1
-generated: "2021-11-18T21:49:41.576696083Z"
+generated: "2021-11-19T10:15:57.654562332Z"
