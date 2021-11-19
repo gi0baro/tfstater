@@ -13,6 +13,7 @@ services:
       dockerfile: Dockerfile
     depends_on:
       - db
+    entrypoint: emmett
     command: develop --host=0.0.0.0
     volumes:
       - ./tfstater:/app/app
