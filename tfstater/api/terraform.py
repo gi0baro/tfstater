@@ -21,7 +21,7 @@ terraform = api.module(__name__, "terraform", url_prefix="terraform")
 terraform.pipeline = [BasicAuthPipe(), CType()]
 
 
-@terraform.route("/<str:name>", methods="get", output="bytes")
+@terraform.route("/<any:name>", methods="get", output="bytes")
 async def get_state_by_name(name: str):
     rv = b"{}"
     row = State.get(name=name)
@@ -35,29 +35,7 @@ async def get_state_by_name(name: str):
     return rv
 
 
-@terraform.route("/<str:name>", methods="post", output="bytes")
-async def update_state_by_name(name: str):
-    try:
-        with State.lock(name, request.user, request.query_params.ID) as state:
-            params = await request.body_params
-            try:
-                with db.atomic():
-                    revision = state.versions.create(
-                        version=params.serial,
-                        publisher=request.user
-                    )
-            except Exception:
-                raise StateLockedException
-            await put_object(
-                revision.id.object_store_path,
-                _json_dump(params)
-            )
-    except StateLockedException:
-        response.status = 409
-    return b"{}"
-
-
-@terraform.route("/<str:name>/lock", methods="post")
+@terraform.route("/<any:name>/lock", methods="post")
 @service.json
 async def lock_state(name: str):
     params = await request.body_params
@@ -75,10 +53,33 @@ async def lock_state(name: str):
     }
 
 
-@terraform.route("/<str:name>/lock", methods="delete", output="bytes")
+@terraform.route("/<any:name>/lock", methods="delete", output="bytes")
 async def unlock_state(name: str):
     # NOTE: if ID is missing from params is a force unlock
     params = await request.body_params
     if not State.unlock({"name": name}, params.ID):
+        response.status = 409
+    return b"{}"
+
+
+# NOTE: this route should be the last defined to avoid catching also `lock_state`
+@terraform.route("/<any:name>", methods="post", output="bytes")
+async def update_state_by_name(name: str):
+    try:
+        with State.lock(name, request.user, request.query_params.ID) as state:
+            params = await request.body_params
+            try:
+                with db.atomic():
+                    revision = state.versions.create(
+                        version=params.serial,
+                        publisher=request.user
+                    )
+            except Exception:
+                raise StateLockedException
+            await put_object(
+                revision.id.object_store_path,
+                _json_dump(params)
+            )
+    except StateLockedException:
         response.status = 409
     return b"{}"
